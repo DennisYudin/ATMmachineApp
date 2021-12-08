@@ -1,7 +1,10 @@
 package com.yourcodereview.dev.yudin.dialogue;
 
+import com.yourcodereview.dev.yudin.banknote.BanknoteResolver;
+import com.yourcodereview.dev.yudin.banknote.Resolver;
 import com.yourcodereview.dev.yudin.banknotecalculator.BanknoteCalculator;
 import com.yourcodereview.dev.yudin.banknotecalculator.Calculator;
+import com.yourcodereview.dev.yudin.console.Console;
 
 import java.util.Scanner;
 
@@ -11,10 +14,11 @@ public class BanknoteCalculatorDialogue implements Dialogue {
     private static final String NOTES_MESSAGE = "Enter banknotes: ";
     private static final String REPEAT_MESSAGE = "Do you wanna to try again? [yes/no]";
     private static final String USER_ANSWER = "Answer: ";
-    private static final String ERROR_MESSAGE = "Sum cannot be less or equals zero";
-    private static final String INCORRECT_INPUT_MESSAGE = "Incorrect input. ";
+    private static final String CONTINUE_ANSWER = "yes";
 
-    private Calculator banknoteCalculator = new BanknoteCalculator();
+    private Resolver banknoteResolver = new BanknoteResolver();
+    private Calculator banknoteCalculator = new BanknoteCalculator(banknoteResolver);
+    private Console console = new Console();
 
     @Override
     public void start(Scanner scanner) {
@@ -23,53 +27,16 @@ public class BanknoteCalculatorDialogue implements Dialogue {
         do {
             System.out.println(GREETING_MESSAGE);
 
-            int sum = validateInputSum(scanner);
+            int sum = console.readSum(SUM_MESSAGE, scanner);
 
             scanner.nextLine();
 
-            printResult(sum, scanner);
+            String[] banknotes = console.readBanknotes(NOTES_MESSAGE, scanner);
+
+            System.out.println(banknoteCalculator.calculate(sum, banknotes));
 
             userAnswer = tryAgain(scanner);
-        } while ("yes".equals(userAnswer));
-    }
-
-    private void printResult(int inputSum, Scanner scanner) {
-        String userInputNotes;
-        boolean goodInput = false;
-        do {
-            System.out.print(NOTES_MESSAGE);
-
-            userInputNotes = scanner.nextLine();
-            try {
-                System.out.println(banknoteCalculator.calculate(inputSum, userInputNotes));
-                goodInput = true;
-            } catch (IllegalArgumentException ex) {
-                System.out.println(INCORRECT_INPUT_MESSAGE + ex.getMessage());
-            }
-        } while (!goodInput);
-    }
-
-    private int validateInputSum(Scanner scanner) {
-        int userInputSum;
-        boolean goodInput = false;
-        do {
-            System.out.print(SUM_MESSAGE);
-            userInputSum = scanner.nextInt();
-            try {
-                validate(userInputSum);
-                goodInput = true;
-            } catch (IllegalArgumentException ex) {
-                System.out.println(INCORRECT_INPUT_MESSAGE + ex.getMessage());
-            }
-        } while (!goodInput);
-
-        return userInputSum;
-    }
-
-    private void validate(int input) {
-        if (input <= 0) {
-            throw new IllegalArgumentException(ERROR_MESSAGE);
-        }
+        } while (CONTINUE_ANSWER.equals(userAnswer));
     }
 
     private String tryAgain(Scanner scanner) {

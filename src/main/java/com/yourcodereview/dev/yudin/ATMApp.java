@@ -12,7 +12,12 @@ public class ATMApp {
         Dialogue banknoteCalculatorDialogue = new BanknoteCalculatorDialogue();
 
         try (Scanner scanner = new Scanner(System.in)) {
-            banknoteCalculatorDialogue.start(scanner);
+
+            try {
+                banknoteCalculatorDialogue.start(scanner);
+            } catch (IllegalArgumentException exception) {
+                System.err.println(exception.getMessage());
+            }
         }
     }
 }

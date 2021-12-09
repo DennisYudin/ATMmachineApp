@@ -77,8 +77,8 @@ public class BanknoteCalculator implements Calculator {
         if (input <= 0) {
             throw new IllegalArgumentException(ERROR_MESSAGE);
         }
-        Optional.ofNullable(banknotesInput).orElseThrow(() -> {
+        if (banknotesInput == null) {
             throw new IllegalArgumentException(INPUT_NULL_MESSAGE);
-        });
+        }
     }
 }

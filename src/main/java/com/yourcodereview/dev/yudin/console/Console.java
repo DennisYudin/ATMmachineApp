@@ -3,7 +3,7 @@ package com.yourcodereview.dev.yudin.console;
 import java.util.Scanner;
 
 public class Console {
-    private static final String REGEX_SYMBOL = ",";
+    private static final String SEPARATOR = ",";
     private static final String REPLACEMENT_SYMBOL = "";
     private static final String INPUT_NULL_MESSAGE = "Input cannot be null";
     private static final String INPUT_EMPTY_MESSAGE = "Input cannot be empty";
@@ -19,7 +19,6 @@ public class Console {
             String userInputNotes = scanner.nextLine();
             try {
                 banknotes = getBanknotes(userInputNotes);
-
                 isGoodInput = true;
             } catch (IllegalArgumentException ex) {
                 System.out.println(INCORRECT_INPUT_MESSAGE + ex.getMessage());
@@ -52,7 +51,7 @@ public class Console {
 
         String inputWithoutSpaces = input.replaceAll("\\s", REPLACEMENT_SYMBOL);
 
-        String[] banknotesStringArray = inputWithoutSpaces.split(REGEX_SYMBOL);
+        String[] banknotesStringArray = inputWithoutSpaces.split(SEPARATOR);
 
         return banknotesStringArray;
     }
